@@ -7,19 +7,22 @@
 
 
 
-node* create_new_node() {
+node* create_new_node(packet* p_new_packet) {
 	node* new_node = NULL;
 	if (NULL == (new_node = (node*)calloc(1, sizeof(node)))) {
 		printf("Couldn't allocate memory for stack");
 		return NULL;
 	}
+	new_node->next_node = NULL;
+	new_node->packet = p_new_packet;
 	return new_node;
 }
 
 bool is_stack_empty(node* head) {
 	return (NULL == head);
 }
-node* insert(node* head, node* new_node) {
+node* insert(node* head, packet* p_new_packet) {
+	node* new_node = create_new_node(p_new_packet);
 	node* temp = head;
 	if (NULL == head) {
 		return new_node;
