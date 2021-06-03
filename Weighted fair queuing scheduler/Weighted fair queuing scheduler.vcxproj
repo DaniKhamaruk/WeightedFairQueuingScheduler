@@ -140,9 +140,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="IO_and_parsing_Module.c" />
+    <ClCompile Include="Stack_Module.c" />
+    <ClCompile Include="testing.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IO_and_parsing_Module.h" />
+    <ClInclude Include="Stack_Module.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

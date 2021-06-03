@@ -18,9 +18,18 @@
     <ClCompile Include="IO_and_parsing_Module.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Stack_Module.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="testing.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IO_and_parsing_Module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Stack_Module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
