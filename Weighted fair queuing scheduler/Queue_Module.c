@@ -74,7 +74,7 @@ node* insert_3(node* head, packet* p_new_packet) {
 	else {
 		if (NULL == head->next_node) {
 			head->next_node = new_node;
-		}
+		} 
 		else {
 			head->tail_node = new_node;
 		}
