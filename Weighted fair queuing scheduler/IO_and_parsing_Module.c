@@ -136,13 +136,13 @@ packet* get_info_to_packet(char* p_line) {
 	fill_packet_with_info(new_packet, time, src_addr, dst_addr, src_port, dst_port, length, weight);
 	return new_packet;
 }
-void main() {
-	//char p_line[MAX_LINE_SIZE] = { 0 };
-	//int index_in_the_line = 0;
-	//packet* local = NULL;
-	//while (NULL!=fgets(p_line, MAX_LINE_SIZE, stdin)) {
-	//	local = get_info_to_packet(p_line);
-	//	print_packet(local);
-	//}
-	//TODO:need to free memory
-}
+//void main() {
+//	//char p_line[MAX_LINE_SIZE] = { 0 };
+//	//int index_in_the_line = 0;
+//	//packet* local = NULL;
+//	//while (NULL!=fgets(p_line, MAX_LINE_SIZE, stdin)) {
+//	//	local = get_info_to_packet(p_line);
+//	//	print_packet(local);
+//	//}
+//	//TODO:need to free memory
+//}

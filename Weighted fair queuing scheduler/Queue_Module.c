@@ -6,7 +6,12 @@
 #include "Queue_Module.h"
 
 
-
+node* initialize_head(node* head) {
+	node* null_node = create_new_node(NULL);
+	//head->packet = NULL;
+	//head->next_node = NULL;
+	return null_node;
+}
 node* create_new_node(packet* p_new_packet) {
 	node* new_node = NULL;
 	if (NULL == (new_node = (node*)calloc(1, sizeof(node)))) {
@@ -14,11 +19,12 @@ node* create_new_node(packet* p_new_packet) {
 		return NULL;
 	}
 	new_node->next_node = NULL;
+	new_node->tail_node = NULL;
 	new_node->packet = p_new_packet;
 	return new_node;
 }
 
-bool is_stack_empty(node* head) {
+bool is_queue_empty(node* head) {
 	return (NULL == head);
 }
 node* insert(node* head, packet* p_new_packet) {
@@ -32,6 +38,47 @@ node* insert(node* head, packet* p_new_packet) {
 	}
 	temp->next_node = new_node;
 	//TODO:need to check
+	return head;
+}
+node* insert_2(node* head, packet* p_new_packet,node* tail) {
+	node* new_node = create_new_node(p_new_packet);
+	node* temp_node = head;
+	if (NULL == head->packet) {
+		temp_node = head;
+		head = new_node;
+		head->next_node = tail;
+		free(temp_node);
+	}
+	else {
+		if (NULL == tail->packet) {
+			temp_node = tail;
+			tail = new_node;
+			tail = tail->next_node;
+			free(temp_node);
+		}
+		else {
+			tail->next_node = new_node;
+			tail = tail->next_node;
+		}
+	}
+	return head;
+}
+node* insert_3(node* head, packet* p_new_packet) {
+	node* new_node = create_new_node(p_new_packet);
+	node* temp_node = head;
+	if (NULL == head->packet) {
+		temp_node = head;
+		head = new_node;
+		free(temp_node);
+	}
+	else {
+		if (NULL == head->next_node) {
+			head->next_node = new_node;
+		}
+		else {
+			head->tail_node = new_node;
+		}
+	}
 	return head;
 }
 node* pop(node* head) {
