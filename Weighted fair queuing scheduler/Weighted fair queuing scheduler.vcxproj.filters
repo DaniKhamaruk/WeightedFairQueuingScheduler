@@ -18,7 +18,7 @@
     <ClCompile Include="IO_and_parsing_Module.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Stack_Module.c">
+    <ClCompile Include="Queue_Module.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="testing.c">
@@ -29,7 +29,7 @@
     <ClInclude Include="IO_and_parsing_Module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Stack_Module.h">
+    <ClInclude Include="Queue_Module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

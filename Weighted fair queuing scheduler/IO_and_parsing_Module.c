@@ -137,12 +137,12 @@ packet* get_info_to_packet(char* p_line) {
 	return new_packet;
 }
 void main() {
-	char p_line[MAX_LINE_SIZE] = { 0 };
-	int index_in_the_line = 0;
-	packet* local = NULL;
-	while (NULL!=fgets(p_line, MAX_LINE_SIZE, stdin)) {
-		local = get_info_to_packet(p_line);
-		print_packet(local);
-	}
+	//char p_line[MAX_LINE_SIZE] = { 0 };
+	//int index_in_the_line = 0;
+	//packet* local = NULL;
+	//while (NULL!=fgets(p_line, MAX_LINE_SIZE, stdin)) {
+	//	local = get_info_to_packet(p_line);
+	//	print_packet(local);
+	//}
 	//TODO:need to free memory
 }
