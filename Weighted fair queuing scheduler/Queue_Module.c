@@ -19,7 +19,6 @@ node* create_new_node(packet* p_new_packet) {
 		return NULL;
 	}
 	new_node->next_node = NULL;
-	new_node->tail_node = NULL;
 	new_node->packet = p_new_packet;
 	return new_node;
 }
@@ -63,23 +62,29 @@ node* insert_2(node* head, packet* p_new_packet,node* tail) {
 	}
 	return head;
 }
-node* insert_3(node* head, packet* p_new_packet) {
+void insert_3(node** head, packet* p_new_packet,node** tail) {
 	node* new_node = create_new_node(p_new_packet);
-	node* temp_node = head;
-	if (NULL == head->packet) {
-		temp_node = head;
-		head = new_node;
+	node* temp_node = *head;
+	if (NULL == (*head)->packet) {
+		temp_node = *head;
+		*head = new_node;
+		(*head)->next_node = *tail;
 		free(temp_node);
 	}
 	else {
-		if (NULL == head->next_node) {
-			head->next_node = new_node;
+		if (NULL == (*tail)->packet) {
+			temp_node = *tail;
+			*tail = new_node;
+			(*tail)->next_node = NULL;
+			(*head)->next_node = *tail;
+			free(temp_node);
 		} 
-		else {
-			head->tail_node = new_node;
+		else{
+			(*tail)->next_node = new_node;
+			(*tail) = (*tail)->next_node;
 		}
 	}
-	return head;
+	/*return tail;*/
 }
 node* pop(node* head) {
 	node* temp_head = head;
