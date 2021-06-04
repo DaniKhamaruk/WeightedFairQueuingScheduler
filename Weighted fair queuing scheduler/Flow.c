@@ -64,7 +64,7 @@ bool port_compare(link_id id, packet* pkt)
 {
 	return ((id.src_port == pkt->src_port) && (id.dst_port == pkt->dst_port));
 }
-bool is_the_pkt_belong_to_flow(flow_struct* flow, packet* pkt)
+bool is_pkt_belong_to_flow(flow_struct* flow, packet* pkt)
 {
 	if (flow == NULL || pkt == NULL)
 		return false;
