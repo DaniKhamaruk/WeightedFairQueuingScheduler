@@ -27,6 +27,9 @@
     <ClCompile Include="Heap.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Flow.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IO_and_parsing_Module.h">
@@ -36,6 +39,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Heap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Flow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
