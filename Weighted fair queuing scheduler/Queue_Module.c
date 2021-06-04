@@ -92,7 +92,8 @@ node* pop(node* head) {
 		return NULL;
 	}
 	head = head->next_node;
-	return temp_head;
+	free(temp_head);
+	return head;
 	//TODO: need to check if returning static allocation is fine
 }
 
