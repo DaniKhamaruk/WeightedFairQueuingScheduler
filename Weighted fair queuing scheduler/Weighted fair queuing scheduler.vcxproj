@@ -139,11 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Heap.c" />
     <ClCompile Include="IO_and_parsing_Module.c" />
     <ClCompile Include="Queue_Module.c" />
     <ClCompile Include="testing.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Heap.h" />
     <ClInclude Include="IO_and_parsing_Module.h" />
     <ClInclude Include="Queue_Module.h" />
   </ItemGroup>

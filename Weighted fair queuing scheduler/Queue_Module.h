@@ -1,9 +1,9 @@
 #pragma once
+#include "IO_and_parsing_Module.h"
 
 typedef struct node {
 	packet* packet;
 	struct node* next_node;
-	struct node* tail_node;
 }node;
 node* create_new_node(packet* p_new_packet);
 bool is_queue_empty(node* head);

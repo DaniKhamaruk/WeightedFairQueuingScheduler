@@ -1,16 +1,14 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
 #include "IO_and_parsing_Module.h"
 #include "Queue_Module.h"
+#include "Heap.h"
 
-void main() {
+void dani()
+{
 	char p_line[MAX_LINE_SIZE] = { 0 };
 	int index_in_the_line = 0;
-	node* head = NULL, *tail = NULL;
+	node* head = NULL, * tail = NULL;
 	//////////////////////
-	head=initialize_head(head);
+	head = initialize_head(head);
 	tail = initialize_head(tail);
 	head->next_node = tail;
 	//TODO:combine into a func ^^^
@@ -21,4 +19,12 @@ void main() {
 		print_packet(local);
 		insert_3(&head, local, &tail);
 	}
+}
+void udi()
+{
+	heap_test();
+}
+void main() {
+	//dani();
+	udi();
 }

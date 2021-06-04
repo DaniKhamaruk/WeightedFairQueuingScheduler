@@ -1,4 +1,9 @@
 #pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+
 #define ADDR_IN_PACKET_SIZE 4
 #define MAX_LINE_SIZE 10000//TOOD:need to check this
 #define ASCII_NUMBER_OFFSET 48
