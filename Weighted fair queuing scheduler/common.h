@@ -33,6 +33,11 @@ typedef struct flow_struct {
 	float weight;
 	int num_of_pkts;
 }flow_struct;
+typedef struct heap_node {
+	flow_struct* flow;
+	struct heap_node* left_flow;
+	struct heap_node* right_flow;
+}heap_node;
 typedef struct heap_struct {
-	flow_struct* head;
+	heap_node* head;
 }heap_struct;

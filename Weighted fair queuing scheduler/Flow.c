@@ -17,10 +17,7 @@ flow_struct* initialize_flow() {
 		printf("Couldn't make new flow\n");
 		return NULL;
 	}
-	new_flow->head = NULL;
-	new_flow->tail = NULL;
 	new_flow->weight = 1.0;
-	new_flow->num_of_pkts = 0;
 	init_link_id(&new_flow->id);
 	return new_flow;
 }
