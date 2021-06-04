@@ -48,8 +48,10 @@ void insert_link_id(link_id* id, packet *pkt)
 flow_struct* insert_pkt_to_new_flow(packet* pkt)
 {
 	flow_struct* new = initialize_flow();
-	insert_link_id(&new->id,pkt);
-	insert_pkt_to_flow(new, pkt);
+	if (new != NULL) {
+		insert_link_id(&new->id, pkt);
+		insert_pkt_to_flow(new, pkt);
+	}
 	return new;
 }
 bool ip_compare(link_id id, packet *pkt)
