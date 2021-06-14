@@ -20,24 +20,26 @@ typedef struct node {
 	packet* packet;
 	struct node* next_node;
 }node;
-typedef struct link_id {
+typedef struct flow_id {
 	int src_port, dst_port;
 	int src_addr[ADDR_IN_PACKET_SIZE];
 	int dst_addr[ADDR_IN_PACKET_SIZE];
 	int first_time;
-}link_id;
+}flow_id;
 typedef struct flow_struct {
 	node* head;
 	node* tail;
-	link_id id;
+	flow_id id;
 	float weight;
 	int num_of_pkts;
 }flow_struct;
 typedef struct heap_node {
 	flow_struct* flow;
-	struct heap_node* left_flow;
-	struct heap_node* right_flow;
+	struct heap_node* left_child;
+	struct heap_node* right_child;
 }heap_node;
 typedef struct heap_struct {
-	heap_node* head;
+	heap_node* root;
+	int size;
+	int total_weight;
 }heap_struct;

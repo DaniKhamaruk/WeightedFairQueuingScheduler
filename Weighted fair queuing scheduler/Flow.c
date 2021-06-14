@@ -1,7 +1,7 @@
 #include "Flow.h"
 #include "Queue_Module.h"
 
-void init_link_id(link_id *id)
+void init_link_id(flow_id*id)
 {
 	id->first_time = _CRT_INT_MAX;
 	id->src_port = 0;
@@ -32,7 +32,7 @@ void insert_pkt_to_flow(flow_struct* flow, packet* pkt)
 	insert_3(&flow->head, pkt, &flow->tail);
 	flow->num_of_pkts++;
 }
-void insert_link_id(link_id* id, packet *pkt)
+void insert_link_id(flow_id* id, packet *pkt)
 {
 	for (int i = 0; i < ADDR_IN_PACKET_SIZE; i++) {
 		id->src_addr[i] = pkt->src_addr[i];
@@ -51,7 +51,7 @@ flow_struct* insert_pkt_to_new_flow(packet* pkt)
 	}
 	return new;
 }
-bool ip_compare(link_id id, packet *pkt)
+bool ip_compare(flow_id id, packet *pkt)
 {
 	for (int i = 0; i < ADDR_IN_PACKET_SIZE; i++) {
 		if (id.src_addr[i] != pkt->src_addr[i] || id.dst_addr[i] != pkt->dst_addr[i])
@@ -59,7 +59,7 @@ bool ip_compare(link_id id, packet *pkt)
 	}
 	return true;
 }
-bool port_compare(link_id id, packet* pkt)
+bool port_compare(flow_id id, packet* pkt)
 {
 	return ((id.src_port == pkt->src_port) && (id.dst_port == pkt->dst_port));
 }
@@ -67,6 +67,6 @@ bool is_pkt_belong_to_flow(flow_struct* flow, packet* pkt)
 {
 	if (flow == NULL || pkt == NULL)
 		return false;
-	link_id id = flow->id;
+	flow_id id = flow->id;
 	return (ip_compare(id, pkt) && port_compare(id, pkt));
 }
