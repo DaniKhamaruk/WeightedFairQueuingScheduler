@@ -35,7 +35,7 @@ void insert_pkt_to_flow(flow_struct* flow, packet* pkt)
 	insert_node_in_queue(&flow->head, pkt, &flow->tail);
 	flow->num_of_pkts++;
 }
-void insert_link_id(flow_id* id, packet *pkt)
+void insert_flow_id(flow_id* id, packet *pkt)
 {
 	for (int i = 0; i < ADDR_IN_PACKET_SIZE; i++) {
 		id->src_addr[i] = pkt->src_addr[i];
@@ -49,7 +49,7 @@ flow_struct* insert_pkt_to_new_flow(packet* pkt)
 {
 	flow_struct* new = initialize_flow();
 	if (new != NULL) {
-		insert_link_id(&new->id, pkt);
+		insert_flow_id(&new->id, pkt);
 		insert_pkt_to_flow(new, pkt);
 	}
 	return new;
@@ -72,4 +72,32 @@ bool is_pkt_belong_to_flow(flow_struct* flow, packet* pkt)
 		return false;
 	flow_id id = flow->id;
 	return (ip_compare(id, pkt) && port_compare(id, pkt));
+}
+node* get_pkt_from_head_of_flow(flow_struct* flow)
+{
+	node* res = NULL;
+	if (!is_flow_empty(flow)) {
+		res = create_new_node(flow->head->packet);
+	}
+	return res;
+}
+bool delete_first_pkt_in_flow(flow_struct* flow)
+{
+	node* node_to_delete = flow->head;
+	bool is_weight_changed = false;
+	if (!is_flow_empty(flow)) {
+		flow->head = flow->head->next_node;
+		free(node_to_delete);
+		if (flow->head != NULL) {
+			flow->head->next_node = NULL;
+			is_weight_changed = (flow->weight != flow->head->packet->weight);
+			flow->weight = flow->head->packet->weight;
+		}
+		flow->num_of_pkts--;
+		if (is_flow_empty(flow)) {
+			flow->head = NULL;
+			flow->tail = NULL;
+		}
+	}
+	return is_weight_changed;
 }

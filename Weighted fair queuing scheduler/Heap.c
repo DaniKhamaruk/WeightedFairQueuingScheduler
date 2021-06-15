@@ -113,11 +113,15 @@ void heap_test()
 	init_heap(&heap);
 	packet *pkt = get_info_to_packet("0 70.246.64.70 14770 4.71.70.4 11970 70\n");
 	insert_pkt_to_heap(&heap, pkt);
+	bool a = delete_first_pkt_in_flow(heap.root->flow);
+	pkt = get_info_to_packet("200 70.246.64.70 14770 4.71.70.4 11970 70 500.0\n");
+	insert_pkt_to_heap(&heap, pkt);
+	a = delete_first_pkt_in_flow(heap.root->flow);
 	pkt = get_info_to_packet("2612 173.253.160.44 36503 165.173.44.44 29583 173\n");
 	insert_pkt_to_heap(&heap, pkt);
 	pkt = get_info_to_packet("2666 173.253.160.44 36503 165.173.44.44 29583 100\n");
 	insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("2770 173.253.160.44 36503 165.173.44.44 29583 33\n");
+	pkt = get_info_to_packet("2770 173.253.160.44 36503 165.173.44.44 29583 33 5.0\n");
 	insert_pkt_to_heap(&heap, pkt);
 	pkt = get_info_to_packet("3000 251.253.160.44 36503 165.173.44.44 29583 13\n");
 	insert_pkt_to_heap(&heap, pkt);
