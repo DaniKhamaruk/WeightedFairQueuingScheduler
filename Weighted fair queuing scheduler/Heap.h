@@ -4,5 +4,6 @@
 void heap_test();
 
 
-int get_total_weight(heap_node* head);
+int insert_pkt_to_heap(heap_struct* heap, packet* pkt);
+int get_total_weight(heap_node* root);
 
