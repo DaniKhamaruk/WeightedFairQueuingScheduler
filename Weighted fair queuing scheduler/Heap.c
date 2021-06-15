@@ -57,7 +57,7 @@ void insret_flow_to_heap(heap_struct* heap, flow_struct *flow)
 	if (heap->root->left_child == NULL || heap->root->right_child == NULL)
 		last_parent = heap->root;
 	else 
-		last_parent = get_end_of_heap(heap->root,ilogb(heap->size),heap->size+1);
+		last_parent = get_end_of_heap(heap->root,ilogb(heap->size+1)-1,heap->size+1);
 	new_node->flow = flow;
 	if (last_parent->left_child == NULL)
 		last_parent->left_child = new_node;
