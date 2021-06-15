@@ -24,12 +24,12 @@ bool is_heap_empty(heap_struct *heap)
 {
 	return (heap->root == NULL);
 }
-bool search_nodes_rec(heap_node* root, packet* pkt, heap_node* res)
+bool search_nodes_rec(heap_node* root, packet* pkt, heap_node** res)
 {
 	if (root == NULL)
 		return false;
 	if (is_pkt_belong_to_flow(root->flow, pkt)) {
-		res = root;
+		*res = root;
 		return true;
 	}
 	return search_nodes_rec(root->left_child, pkt, res) || search_nodes_rec(root->right_child, pkt, res);
@@ -37,7 +37,7 @@ bool search_nodes_rec(heap_node* root, packet* pkt, heap_node* res)
 flow_struct* search_flow(heap_struct* heap, packet* pkt)
 {
 	heap_node* res = NULL;
-	search_nodes_rec(heap->root, pkt, res); //if flow not in heap: res = NULL. else: res = flow;
+	search_nodes_rec(heap->root, pkt, &res); //if flow not in heap: res = NULL. else: res = flow;
 	if (res != NULL)
 		return res->flow;
 	return NULL;
@@ -66,7 +66,7 @@ void insret_flow_to_heap(heap_struct* heap, flow_struct *flow)
 }
 int get_total_weight(heap_node* root)
 {
-	if (root->flow == NULL)
+	if (root == NULL)
 		return 0;
 	if (!is_flow_empty(root->flow))
 		return root->flow->weight + get_total_weight(root->left_child) + get_total_weight(root->right_child);
@@ -113,5 +113,18 @@ void heap_test()
 	init_heap(&heap);
 	packet *pkt = get_info_to_packet("0 70.246.64.70 14770 4.71.70.4 11970 70\n");
 	insert_pkt_to_heap(&heap, pkt);
+	pkt = get_info_to_packet("2612 173.253.160.44 36503 165.173.44.44 29583 173\n");
+	insert_pkt_to_heap(&heap, pkt);
+	pkt = get_info_to_packet("2666 173.253.160.44 36503 165.173.44.44 29583 100\n");
+	insert_pkt_to_heap(&heap, pkt);
+	pkt = get_info_to_packet("2770 173.253.160.44 36503 165.173.44.44 29583 33\n");
+	insert_pkt_to_heap(&heap, pkt);
+	pkt = get_info_to_packet("3000 251.253.160.44 36503 165.173.44.44 29583 13\n");
+	insert_pkt_to_heap(&heap, pkt);
+	pkt = get_info_to_packet("4000 10.253.160.44 36503 165.173.44.44 29583 20\n");
+	insert_pkt_to_heap(&heap, pkt);
+	pkt = get_info_to_packet("5000 251.253.160.44 36503 165.173.44.44 29583 20\n");
+	insert_pkt_to_heap(&heap, pkt);
+	free(pkt);
 	return;
 }

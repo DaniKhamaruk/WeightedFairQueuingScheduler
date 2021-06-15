@@ -17,7 +17,7 @@ void dani()
 	while (NULL != fgets(p_line, MAX_LINE_SIZE, stdin)) {
 		local = get_info_to_packet(p_line);
 		print_packet(local);
-		insert_3(&head, local, &tail);
+		insert_node_in_queue(&head, local, &tail);
 	}
 }
 void udi()

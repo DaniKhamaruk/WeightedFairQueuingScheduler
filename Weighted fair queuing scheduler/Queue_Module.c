@@ -21,65 +21,20 @@ node* create_new_node(packet* p_new_packet) {
 bool is_queue_empty(node* head) {
 	return (NULL == head);
 }
-node* insert(node* head, packet* p_new_packet) {
+void insert_node_in_queue(node** head, packet* p_new_packet,node** tail) {
 	node* new_node = create_new_node(p_new_packet);
-	node* temp = head;
-	if (NULL == head) {
-		return new_node;
-	}
-	while (NULL != temp->next_node) {
-		temp = temp->next_node;
-	}
-	temp->next_node = new_node;
-	//TODO:need to check
-	return head;
-}
-node* insert_2(node* head, packet* p_new_packet,node* tail) {
-	node* new_node = create_new_node(p_new_packet);
-	node* temp_node = head;
-	if (NULL == head->packet) {
-		temp_node = head;
-		head = new_node;
-		head->next_node = tail;
-		free(temp_node);
-	}
-	else {
-		if (NULL == tail->packet) {
-			temp_node = tail;
-			tail = new_node;
-			tail = tail->next_node;
-			free(temp_node);
-		}
-		else {
-			tail->next_node = new_node;
-			tail = tail->next_node;
-		}
-	}
-	return head;
-}
-void insert_3(node** head, packet* p_new_packet,node** tail) {
-	node* new_node = create_new_node(p_new_packet);
-	node* temp_node = *head;
-	if (NULL == (*head)->packet) {
-		temp_node = *head;
+	if (NULL == *head) { 
 		*head = new_node;
-		(*head)->next_node = *tail;
-		free(temp_node);
+		*tail = *head;
+	}
+	else if ((*head)->next_node == NULL) {
+		(*head)->next_node = new_node;
+		*tail = new_node;
 	}
 	else {
-		if (NULL == (*tail)->packet) {
-			temp_node = *tail;
-			*tail = new_node;
-			(*tail)->next_node = NULL;
-			(*head)->next_node = *tail;
-			free(temp_node);
-		} 
-		else{
-			(*tail)->next_node = new_node;
-			(*tail) = (*tail)->next_node;
-		}
+		(*tail)->next_node = new_node;
+		*tail = new_node;
 	}
-	/*return tail;*/
 }
 node* pop(node* head) {
 	node* temp_head = head;
