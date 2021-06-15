@@ -47,7 +47,7 @@ heap_node* get_end_of_heap(heap_node* root,int num_of_levels_to_go, int new_chil
 	//new_child_num bit at index num_of_levels_to_go, telling if to go left(0) or right(1)
 	if (num_of_levels_to_go == 0) //parent
 		return root;
-	else if (new_child_num >> num_of_levels_to_go % 2 == 0) //go left
+	else if ((new_child_num >> num_of_levels_to_go) % 2 == 0) //go left
 		return get_end_of_heap(root->left_child, num_of_levels_to_go - 1, new_child_num);
 	return get_end_of_heap(root->right_child, num_of_levels_to_go - 1, new_child_num); //go right
 }
@@ -57,7 +57,7 @@ void insret_flow_to_heap(heap_struct* heap, flow_struct *flow)
 	if (heap->root->left_child == NULL || heap->root->right_child == NULL)
 		last_parent = heap->root;
 	else 
-		last_parent = get_end_of_heap(heap->root,ilogb(heap->size + 1),heap->size+1);
+		last_parent = get_end_of_heap(heap->root,ilogb(heap->size),heap->size+1);
 	new_node->flow = flow;
 	if (last_parent->left_child == NULL)
 		last_parent->left_child = new_node;

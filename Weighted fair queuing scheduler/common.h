@@ -41,5 +41,5 @@ typedef struct heap_node {
 typedef struct heap_struct {
 	heap_node* root;
 	int size;
-	int total_weight;
+	float total_weight;
 }heap_struct;
