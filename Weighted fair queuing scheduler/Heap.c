@@ -120,21 +120,25 @@ void heap_test()
 {
 	heap_struct heap;
 	init_heap(&heap);
-	packet *pkt = get_info_to_packet("0 70.246.64.70 14770 4.71.70.4 11970 70\n");
+	packet *pkt = get_info_to_packet("0 70.246.64.70 14770 4.71.70.4 11970 200 2.0\n");
 	insert_pkt_to_heap(&heap, pkt);
 	//bool a = delete_first_pkt_in_flow(heap.root->flow);
-	pkt = get_info_to_packet("200 70.246.64.70 14770 4.71.70.4 11970 70 500.0\n");
-	insert_pkt_to_heap(&heap, pkt);
+	//pkt = get_info_to_packet("200 70.246.64.70 14770 4.71.70.4 11970 70 500.0\n");
+	//insert_pkt_to_heap(&heap, pkt);
 	//a = delete_first_pkt_in_flow(heap.root->flow);
-	pkt = get_info_to_packet("2612 173.253.160.44 36503 165.173.44.44 29583 173\n");
+	pkt = get_info_to_packet("2612 173.253.160.44 36503 165.173.44.44 29583 100\n");
+	insert_pkt_to_heap(&heap, pkt);
+	pkt = get_info_to_packet("2612 1.1.1.1 36503 165.173.44.44 29583 300 3.0\n");
+	insert_pkt_to_heap(&heap, pkt);
+	pkt = get_info_to_packet("2612 1.2.1.1 36503 165.173.44.44 29583 400 4.0\n");
 	insert_pkt_to_heap(&heap, pkt);
 	//pkt = get_info_to_packet("2666 173.253.160.44 36503 165.173.44.44 29583 100\n");
 	//insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("2770 1.1.1.1 36503 165.173.44.44 29583 5000 5.0\n");
-	insert_pkt_to_heap(&heap, pkt);
+	//pkt = get_info_to_packet("2770 1.1.1.1 36503 165.173.44.44 29583 5000 5.0\n");
+	//insert_pkt_to_heap(&heap, pkt);
 	float total_weight_for_debug = (float)get_total_weight(heap.root);
 	//float b = search_for_minimum_time_left_in_heap_recursive_float(heap.root,total_weight_for_debug);
-	update_remaining_length_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
+	//update_remaining_length_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
 	heap.root = update_min_time_and_place_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
 	
 	//pkt = get_info_to_packet("2770 2.2.2.2 36503 165.173.44.44 29583 10 2.0\n");
