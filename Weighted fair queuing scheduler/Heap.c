@@ -82,6 +82,9 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 		heap->root = create_heap_node();
 		if ((heap->root->flow = insert_pkt_to_new_flow(pkt)) == NULL)
 			return EXIT_FAILURE;
+		///////////////////////////////////////////////////////////////////////////
+		heap->root->flow->gps_parameters.time_remain = (float)pkt->length;
+		///////////////////////////////////////////////////////////////////////////
 		is_total_weight_changed = true;
 		heap->size++;
 	}
@@ -91,12 +94,16 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 			flow = insert_pkt_to_new_flow(pkt);
 			if (flow == NULL)
 				return EXIT_FAILURE;
+			///////////////////////////////////////////////////////////////////////////
+			flow->gps_parameters.time_remain = (float)pkt->length * (heap->total_weight+ pkt->weight) / pkt->weight;
+			///////////////////////////////////////////////////////////////////////////
 			insret_flow_to_heap(heap, flow);
 			is_total_weight_changed = true;
 			heap->size++;
 		}
 		else {
 			is_total_weight_changed = is_flow_empty(flow);
+			
 			insert_pkt_to_flow(flow, pkt);
 		}
 	}
@@ -126,11 +133,14 @@ void heap_test()
 	pkt = get_info_to_packet("2770 1.1.1.1 36503 165.173.44.44 29583 5000 5.0\n");
 	insert_pkt_to_heap(&heap, pkt);
 	float total_weight_for_debug = (float)get_total_weight(heap.root);
-	float b = search_for_minimum_time_left_in_heap_recursive_float(heap.root,total_weight_for_debug);
-	heap.root= update_min_time_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
-	pkt = get_info_to_packet("2770 2.2.2.2 36503 165.173.44.44 29583 10 2.0\n");
-	insert_pkt_to_heap(&heap, pkt);
-	heap.root = update_min_time_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
+	//float b = search_for_minimum_time_left_in_heap_recursive_float(heap.root,total_weight_for_debug);
+	update_remaining_length_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
+	heap.root = update_min_time_and_place_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
+	
+	//pkt = get_info_to_packet("2770 2.2.2.2 36503 165.173.44.44 29583 10 2.0\n");
+	//insert_pkt_to_heap(&heap, pkt);
+	//total_weight_for_debug = (float)get_total_weight(heap.root);
+	//heap.root = update_min_time_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
 
 
 	//free(pkt);
