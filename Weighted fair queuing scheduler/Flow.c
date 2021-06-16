@@ -51,6 +51,7 @@ flow_struct* insert_pkt_to_new_flow(packet* pkt)
 	if (new != NULL) {
 		insert_flow_id(&new->id, pkt);
 		insert_pkt_to_flow(new, pkt);
+		new->gps_parameters.time_remain = (float)pkt->length;
 	}
 	return new;
 }

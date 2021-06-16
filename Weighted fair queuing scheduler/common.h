@@ -10,6 +10,8 @@
 #define ASCII_SPACE 32
 #define ASCII_DOT 46
 #define ASCII_CR_LF 10
+#define INFINITE_TIME_INT (unsigned int)-1
+#define INFINITE_TIME_FLOAT (float)99999999.0
 typedef struct packet {
 	int time, src_port, dst_port, length;
 	float weight;
@@ -20,6 +22,11 @@ typedef struct node {
 	packet* packet;
 	struct node* next_node;
 }node;
+
+typedef struct GPS {
+	int time_to_finish;
+	float time_remain;
+}GPS;
 typedef struct flow_id {
 	int src_port, dst_port;
 	int src_addr[ADDR_IN_PACKET_SIZE];
@@ -31,6 +38,7 @@ typedef struct flow_struct {
 	node* tail;
 	flow_id id;
 	float weight;
+	GPS gps_parameters;
 	int num_of_pkts;
 }flow_struct;
 typedef struct heap_node {

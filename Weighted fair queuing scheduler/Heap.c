@@ -2,6 +2,7 @@
 #include "Heap.h"
 #include "Flow.h"
 #include "IO_and_parsing_Module.h"
+#include "GPS_Module.h"
 #pragma warning(disable : 4244) //Num of links < MAX_INT
 #pragma warning(disable : 26451)//Num of links < MAX_INT
 
@@ -73,6 +74,9 @@ int get_total_weight(heap_node* root)
 	else
 		return get_total_weight(root->left_child) + get_total_weight(root->right_child);
 }
+void run_GPS(float total_weight,flow_struct* p_flow) {
+
+}
 int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 {
 	bool is_total_weight_changed = false;
@@ -113,22 +117,23 @@ void heap_test()
 	init_heap(&heap);
 	packet *pkt = get_info_to_packet("0 70.246.64.70 14770 4.71.70.4 11970 70\n");
 	insert_pkt_to_heap(&heap, pkt);
-	bool a = delete_first_pkt_in_flow(heap.root->flow);
+	//bool a = delete_first_pkt_in_flow(heap.root->flow);
 	pkt = get_info_to_packet("200 70.246.64.70 14770 4.71.70.4 11970 70 500.0\n");
 	insert_pkt_to_heap(&heap, pkt);
-	a = delete_first_pkt_in_flow(heap.root->flow);
+	//a = delete_first_pkt_in_flow(heap.root->flow);
 	pkt = get_info_to_packet("2612 173.253.160.44 36503 165.173.44.44 29583 173\n");
 	insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("2666 173.253.160.44 36503 165.173.44.44 29583 100\n");
+	//pkt = get_info_to_packet("2666 173.253.160.44 36503 165.173.44.44 29583 100\n");
+	//insert_pkt_to_heap(&heap, pkt);
+	pkt = get_info_to_packet("2770 1.1.1.1 36503 165.173.44.44 29583 33 5.0\n");
 	insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("2770 173.253.160.44 36503 165.173.44.44 29583 33 5.0\n");
-	insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("3000 251.253.160.44 36503 165.173.44.44 29583 13\n");
-	insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("4000 10.253.160.44 36503 165.173.44.44 29583 20\n");
-	insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("5000 251.253.160.44 36503 165.173.44.44 29583 20\n");
-	insert_pkt_to_heap(&heap, pkt);
-	free(pkt);
+	float b = search_for_minimum_time_left_in_heap_recursive_float(heap.root);
+	//pkt = get_info_to_packet("3000 251.253.160.44 36503 165.173.44.44 29583 13\n");
+	//insert_pkt_to_heap(&heap, pkt);
+	//pkt = get_info_to_packet("4000 10.253.160.44 36503 165.173.44.44 29583 20\n");
+	//insert_pkt_to_heap(&heap, pkt);
+	//pkt = get_info_to_packet("5000 251.253.160.44 36503 165.173.44.44 29583 20\n");
+	//insert_pkt_to_heap(&heap, pkt);
+	//free(pkt);
 	return;
 }

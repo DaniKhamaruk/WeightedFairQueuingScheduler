@@ -30,6 +30,9 @@
     <ClCompile Include="Flow.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GPS_Module.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IO_and_parsing_Module.h">
@@ -45,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Flow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GPS_Module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
