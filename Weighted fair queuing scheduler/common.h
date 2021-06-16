@@ -25,7 +25,7 @@ typedef struct node {
 
 typedef struct GPS {
 	int time_to_finish;
-	float time_remain;
+	float length_remain;
 }GPS;
 typedef struct flow_id {
 	int src_port, dst_port;

@@ -123,11 +123,15 @@ void heap_test()
 	insert_pkt_to_heap(&heap, pkt);
 	//pkt = get_info_to_packet("2666 173.253.160.44 36503 165.173.44.44 29583 100\n");
 	//insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("2770 1.1.1.1 36503 165.173.44.44 29583 5 5.0\n");
+	pkt = get_info_to_packet("2770 1.1.1.1 36503 165.173.44.44 29583 5000 5.0\n");
 	insert_pkt_to_heap(&heap, pkt);
 	float total_weight_for_debug = (float)get_total_weight(heap.root);
 	float b = search_for_minimum_time_left_in_heap_recursive_float(heap.root,total_weight_for_debug);
-	update_min_time_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
+	heap.root= update_min_time_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
+	pkt = get_info_to_packet("2770 2.2.2.2 36503 165.173.44.44 29583 10 2.0\n");
+	insert_pkt_to_heap(&heap, pkt);
+	heap.root = update_min_time_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
+
 
 	//free(pkt);
 	//TODO: NEED TO FREE ALL OF THE PACKETS !
