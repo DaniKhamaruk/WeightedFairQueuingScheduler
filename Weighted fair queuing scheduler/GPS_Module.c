@@ -104,14 +104,3 @@ heap_node* update_min_time_for_all_heap_recursive(heap_node* current_heap_node,f
 	current_heap_node->flow->gps_parameters.length_remain -= weight_portion*delta_time_to_run;
 	return swap_nodes(current_heap_node);
 }
-void update_the_heap_by_remaining_weight_recursive(heap_node* current_heap_node) {
-	if (NULL == current_heap_node) {
-		return;
-	}
-	flow_struct* temp_flow = NULL;
-	update_the_heap_by_remaining_weight_recursive(current_heap_node->left_child);
-	update_the_heap_by_remaining_weight_recursive(current_heap_node->right_child);
-	if (current_heap_node->flow->gps_parameters.length_remain > current_heap_node->left_child->flow->gps_parameters.length_remain) {
-
-	}
-}
