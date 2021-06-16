@@ -48,13 +48,14 @@ float minimum_time_out_of_three_float(float time_left, float time_right, float t
 	return min_time;
 }
 
-float search_for_minimum_time_left_in_heap_recursive_float(heap_node* current_heap_node) {
+float search_for_minimum_time_left_in_heap_recursive_float(heap_node* current_heap_node,float total_heap_weight) {
 	if (NULL == current_heap_node) {
 		return INFINITE_TIME_FLOAT;
 	}
-	float time_left = search_for_minimum_time_left_in_heap_recursive_float(current_heap_node->left_child);
-	float time_right = search_for_minimum_time_left_in_heap_recursive_float(current_heap_node->right_child);
+	float time_left = search_for_minimum_time_left_in_heap_recursive_float(current_heap_node->left_child, total_heap_weight);
+	float time_right = search_for_minimum_time_left_in_heap_recursive_float(current_heap_node->right_child, total_heap_weight);
 	float this_node_time = current_heap_node->flow->gps_parameters.time_remain;
+	this_node_time = this_node_time * current_heap_node->flow->weight / total_heap_weight;
 	return minimum_time_out_of_three_float(time_left, time_right, this_node_time);
 }
 //--------------------------------------------------------------

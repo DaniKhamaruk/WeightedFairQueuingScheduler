@@ -74,9 +74,7 @@ int get_total_weight(heap_node* root)
 	else
 		return get_total_weight(root->left_child) + get_total_weight(root->right_child);
 }
-void run_GPS(float total_weight,flow_struct* p_flow) {
 
-}
 int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 {
 	bool is_total_weight_changed = false;
@@ -125,15 +123,13 @@ void heap_test()
 	insert_pkt_to_heap(&heap, pkt);
 	//pkt = get_info_to_packet("2666 173.253.160.44 36503 165.173.44.44 29583 100\n");
 	//insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("2770 1.1.1.1 36503 165.173.44.44 29583 33 5.0\n");
+	pkt = get_info_to_packet("2770 1.1.1.1 36503 165.173.44.44 29583 5 5.0\n");
 	insert_pkt_to_heap(&heap, pkt);
-	float b = search_for_minimum_time_left_in_heap_recursive_float(heap.root);
-	//pkt = get_info_to_packet("3000 251.253.160.44 36503 165.173.44.44 29583 13\n");
-	//insert_pkt_to_heap(&heap, pkt);
-	//pkt = get_info_to_packet("4000 10.253.160.44 36503 165.173.44.44 29583 20\n");
-	//insert_pkt_to_heap(&heap, pkt);
-	//pkt = get_info_to_packet("5000 251.253.160.44 36503 165.173.44.44 29583 20\n");
-	//insert_pkt_to_heap(&heap, pkt);
+	float total_weight_for_debug = (float)get_total_weight(heap.root);
+	float b = search_for_minimum_time_left_in_heap_recursive_float(heap.root,total_weight_for_debug);
+	update_min_time_for_all_heap_recursive(heap.root, total_weight_for_debug, b);
+
 	//free(pkt);
+	//TODO: NEED TO FREE ALL OF THE PACKETS !
 	return;
 }
