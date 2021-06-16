@@ -127,7 +127,7 @@ void heap_test()
 	insert_pkt_to_heap(&heap, pkt);
 	float total_weight_for_debug = (float)get_total_weight(heap.root);
 	float b = search_for_minimum_time_left_in_heap_recursive_float(heap.root,total_weight_for_debug);
-	update_min_time_for_all_heap_recursive(heap.root, total_weight_for_debug, b);
+	update_min_time_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
 
 	//free(pkt);
 	//TODO: NEED TO FREE ALL OF THE PACKETS !
