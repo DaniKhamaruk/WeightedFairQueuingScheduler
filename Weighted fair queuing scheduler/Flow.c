@@ -17,9 +17,6 @@ flow_struct* initialize_flow() {
 		printf("Couldn't make new flow\n");
 		return NULL;
 	}
-	//new_flow->head = create_new_node(NULL);
-	//new_flow->tail = create_new_node(NULL);;
-//	new_flow->head->next_node = new_flow->tail;
 	new_flow->weight = 1.0;
 	init_link_id(&new_flow->id);
 	return new_flow;

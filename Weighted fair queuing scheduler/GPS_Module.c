@@ -86,8 +86,10 @@ void update_remaining_length_for_all_heap_recursive(heap_node* current_heap_node
 	if (NULL == current_heap_node) {
 		return;
 	}
-	float weight_portion = get_weight_portion_from_packet(current_heap_node->flow->head->packet, total_weight_of_heap);
-	current_heap_node->flow->gps_parameters.length_remain -= weight_portion * delta_time_to_run;
+	if (!is_flow_empty(current_heap_node->flow)) {
+		float weight_portion = get_weight_portion_from_packet(current_heap_node->flow->head->packet, total_weight_of_heap);
+		current_heap_node->flow->gps_parameters.length_remain -= weight_portion * delta_time_to_run;
+	}
 	update_remaining_length_for_all_heap_recursive(current_heap_node->left_child, total_weight_of_heap, delta_time_to_run);
 	update_remaining_length_for_all_heap_recursive(current_heap_node->right_child, total_weight_of_heap, delta_time_to_run);
 }
