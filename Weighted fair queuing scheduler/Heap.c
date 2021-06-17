@@ -82,9 +82,6 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 		heap->root = create_heap_node();
 		if ((heap->root->flow = insert_pkt_to_new_flow(pkt)) == NULL)
 			return EXIT_FAILURE;
-		///////////////////////////////////////////////////////////////////////////
-		//heap->root->flow->gps_parameters.time_remain = (float)pkt->length;
-		///////////////////////////////////////////////////////////////////////////
 		is_total_weight_changed = true;
 		heap->size++;
 	}
@@ -94,9 +91,6 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 			flow = insert_pkt_to_new_flow(pkt);
 			if (flow == NULL)
 				return EXIT_FAILURE;
-			///////////////////////////////////////////////////////////////////////////
-			//flow->gps_parameters.time_remain = (float)pkt->length * (heap->total_weight+ pkt->weight) / pkt->weight;
-			///////////////////////////////////////////////////////////////////////////
 			insret_flow_to_heap(heap, flow);
 			is_total_weight_changed = true;
 			heap->size++;
@@ -109,28 +103,36 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 	}
 	if (is_total_weight_changed){
 		heap->total_weight = get_total_weight(heap->root);
-		//TODO: update GPS
-		/*
-			calc GPS to each node and fix the heap
-		*/
 		heap->root = update_min_time_and_place_for_all_heap_recursive(heap->root,heap->total_weight);
 	}
 	return EXIT_SUCCESS;
+}
+void update_flows_if_first_pkt_finished_to_send(heap_node* root)
+{
+	if (root == NULL || root->flow->gps_parameters.length_remain > 0)
+		return;
+	delete_first_pkt_in_flow(root->flow);
+	update_flows_if_first_pkt_finished_to_send(root->left_child);
+	update_flows_if_first_pkt_finished_to_send(root->right_child);
+}
+void update_heap(heap_struct* heap, float delta_time_to_update)
+{
+	update_remaining_length_for_all_heap_recursive(heap->root, heap->total_weight, delta_time_to_update);
+	update_flows_if_first_pkt_finished_to_send(heap->root);
+	heap->total_weight = get_total_weight(heap->root);
+	heap->root = update_min_time_and_place_for_all_heap_recursive(heap->root, heap->total_weight);
 }
 void heap_test()
 {
 	heap_struct heap;
 	init_heap(&heap);
-	packet *pkt = get_info_to_packet("0 70.246.64.70 14770 4.71.70.4 11970 200 2.0\n");
+	packet *pkt = get_info_to_packet("0 70.246.64.70 14770 4.71.70.4 11970 100 2.0\n");
 	insert_pkt_to_heap(&heap, pkt);
-	//bool a = delete_first_pkt_in_flow(heap.root->flow);
-	//pkt = get_info_to_packet("200 70.246.64.70 14770 4.71.70.4 11970 70 500.0\n");
-	//insert_pkt_to_heap(&heap, pkt);
-	//a = delete_first_pkt_in_flow(heap.root->flow);
 	pkt = get_info_to_packet("2612 173.253.160.44 36503 165.173.44.44 29583 100\n");
 	insert_pkt_to_heap(&heap, pkt);
 	///////////////////////////////////////////////////////////////////////////////
-	update_remaining_length_for_all_heap_recursive(heap.root, heap.total_weight, 120.0);
+	float delta = heap.root->flow->gps_parameters.time_remain;
+	update_heap(&heap, delta);
 	pkt = get_info_to_packet("2612 1.1.1.1 36503 165.173.44.44 29583 300 3.0\n");
 	insert_pkt_to_heap(&heap, pkt);
 	pkt = get_info_to_packet("2612 1.2.1.1 36503 165.173.44.44 29583 400 4.0\n");

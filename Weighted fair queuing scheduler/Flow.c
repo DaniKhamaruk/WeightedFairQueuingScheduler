@@ -97,7 +97,7 @@ bool delete_first_pkt_in_flow(flow_struct* flow)
 		flow->num_of_pkts--;
 		if (is_flow_empty(flow)) {
 			flow->head = NULL;
-			flow->tail = NULL;
+			flow->tail = NULL; 
 		}
 	}
 	return is_weight_changed;
