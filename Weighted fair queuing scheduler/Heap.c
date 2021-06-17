@@ -43,6 +43,21 @@ flow_struct* search_flow(heap_struct* heap, packet* pkt)
 		return res->flow;
 	return NULL;
 }
+heap_node* search_flow_to_send_his_pkt(heap_node* root)
+{
+	if (root == NULL || is_flow_empty(root->flow))
+		return NULL;
+	if (!root->flow->head->packet->is_pkt_in_WFQ) 
+		return root;
+	heap_node* left = search_flow_to_send_his_pkt(root->left_child);
+	heap_node* right = search_flow_to_send_his_pkt(root->right_child);
+	if (left == NULL)
+		return right;
+	else if (right == NULL)
+		return left;
+	else
+		return (left->flow->gps_parameters.time_remain < right->flow->gps_parameters.time_remain ? left : right);
+}
 heap_node* get_end_of_heap(heap_node* root,int num_of_levels_to_go, int new_child_num)
 {
 	//new_child_num bit at index num_of_levels_to_go, telling if to go left(0) or right(1)
@@ -97,7 +112,6 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 		}
 		else {
 			is_total_weight_changed = is_flow_empty(flow);
-			
 			insert_pkt_to_flow(flow, pkt);
 		}
 	}
@@ -107,23 +121,25 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 	}
 	return EXIT_SUCCESS;
 }
-void update_flows_if_first_pkt_finished_to_send(heap_node* root)
+void update_flows_if_first_pkt_finished_to_send(heap_node* root, flow_struct* WFQ)
 {
 	if (root == NULL || root->flow->gps_parameters.length_remain > 0)
 		return;
+	if (!is_flow_empty(root->flow) && !root->flow->head->packet->is_pkt_in_WFQ)
+		insert_new_pkt_to_WFQ(WFQ, root->flow);
 	delete_first_pkt_in_flow(root->flow);
-	update_flows_if_first_pkt_finished_to_send(root->left_child);
-	update_flows_if_first_pkt_finished_to_send(root->right_child);
+	update_flows_if_first_pkt_finished_to_send(root->left_child, WFQ);
+	update_flows_if_first_pkt_finished_to_send(root->right_child, WFQ);
 }
-void update_heap(heap_struct* heap, float delta_time_to_update)
+void update_heap(heap_struct* heap, float delta_time_to_update, flow_struct *WFQ)
 {
 	update_remaining_length_for_all_heap_recursive(heap->root, heap->total_weight, delta_time_to_update);
-	update_flows_if_first_pkt_finished_to_send(heap->root);
+	update_flows_if_first_pkt_finished_to_send(heap->root, WFQ);
 	heap->total_weight = get_total_weight(heap->root);
 	heap->root = update_min_time_and_place_for_all_heap_recursive(heap->root, heap->total_weight);
 }
 void heap_test()
-{
+{/*
 	heap_struct heap;
 	init_heap(&heap);
 	packet *pkt = get_info_to_packet("0 70.246.64.70 14770 4.71.70.4 11970 100 2.0\n");
@@ -141,5 +157,5 @@ void heap_test()
 	insert_pkt_to_heap(&heap, pkt);
 	printf("yosi");
 	//TODO: NEED TO FREE ALL OF THE PACKETS !
-	return;
+	return;*/
 }

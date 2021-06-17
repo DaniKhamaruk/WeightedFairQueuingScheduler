@@ -18,6 +18,8 @@ typedef struct packet {
 	float weight;
 	int src_addr[ADDR_IN_PACKET_SIZE];
 	int dst_addr[ADDR_IN_PACKET_SIZE];
+	char pkt_str[MAX_LINE_SIZE];
+	bool is_pkt_in_WFQ;
 }packet;
 typedef struct node {
 	packet* packet;
