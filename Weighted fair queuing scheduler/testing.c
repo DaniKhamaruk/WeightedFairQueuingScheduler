@@ -107,13 +107,13 @@ void main() {
 			if (!is_flow_empty(WFQ))
 				delete_first_pkt_in_flow(WFQ);
 			if (is_flow_empty(WFQ) && !is_flow_empty(heap.root->flow)) { //fetch new pkt to send
-				node_to_send_his_pkt = search_flow_to_send_his_pkt(heap.root);
-				insert_new_pkt_to_WFQ(WFQ, node_to_send_his_pkt->flow);
+				node_to_send_his_pkt = search_flow_to_send_his_pkt(heap.root,heap.total_weight);
+				if (node_to_send_his_pkt != NULL)
+					insert_new_pkt_to_WFQ(WFQ, node_to_send_his_pkt->flow);
 			}
 			if (!is_flow_empty(WFQ)) {
 				WFQ_empty = false;
 				WFQ->gps_parameters.time_remain = (float)WFQ->head->packet->length;
-			//TODO: uncomment	
 				fprintf(stdout,"%d: %s", global_time, WFQ->head->packet->pkt_str);
 
 				//////////////////////////////////////////////////////////

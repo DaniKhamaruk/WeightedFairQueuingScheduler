@@ -15,13 +15,13 @@ heap_node* create_heap_node()
 	}
 	return new;
 }
-void init_heap(heap_struct *heap)
+void init_heap(heap_struct* heap)
 {
 	heap->root = NULL;
 	heap->size = 0;
 	heap->total_weight = 0;
 }
-bool is_heap_empty(heap_struct *heap)
+bool is_heap_empty(heap_struct* heap)
 {
 	return (heap->root == NULL);
 }
@@ -43,20 +43,74 @@ flow_struct* search_flow(heap_struct* heap, packet* pkt)
 		return res->flow;
 	return NULL;
 }
-heap_node* search_flow_to_send_his_pkt(heap_node* root)
+heap_node* search_flow_to_send_his_pkt(heap_node* root, float total_weight)
 {
 	if (root == NULL || is_flow_empty(root->flow))
 		return NULL;
-	if (!root->flow->head->packet->is_pkt_in_WFQ) 
+	if (!root->flow->head->packet->is_pkt_in_WFQ)
 		return root;
-	heap_node* left = search_flow_to_send_his_pkt(root->left_child);
-	heap_node* right = search_flow_to_send_his_pkt(root->right_child);
-	if (left == NULL)
-		return right;
-	else if (right == NULL)
+	heap_node* left = search_flow_to_send_his_pkt(root->left_child, total_weight);
+	heap_node* right = search_flow_to_send_his_pkt(root->right_child, total_weight);
+	float next_pkt_in_flow_time_remain = FLT_MAX, left_time_remain = FLT_MAX, right_time_remain = FLT_MAX, min_time = 0;
+	node* next_pkt_node = root->flow->head->next_node;
+	while (next_pkt_node != NULL) {
+		if (!next_pkt_node->packet->is_pkt_in_WFQ) {
+			next_pkt_in_flow_time_remain = root->flow->gps_parameters.time_remain +
+				next_pkt_node->packet->length * (total_weight - root->flow->weight + next_pkt_node->packet->weight)
+					/ next_pkt_node->packet->weight;
+			break;
+		}
+		next_pkt_node = next_pkt_node->next_node;
+	}
+	if (left != NULL)
+		left_time_remain = left->flow->gps_parameters.time_remain;
+	if (right != NULL)
+		right_time_remain = right->flow->gps_parameters.time_remain;
+	min_time = min(next_pkt_in_flow_time_remain, left_time_remain);
+	min_time = min(min_time, right_time_remain);
+	if (left_time_remain == min_time)
 		return left;
-	else
-		return (left->flow->gps_parameters.time_remain < right->flow->gps_parameters.time_remain ? left : right);
+	if (right_time_remain == min_time)
+		return right;
+	return root;
+}
+packet* find_new_pkt_to_WFQ(flow_struct* flow)
+{
+	packet* res = NULL;
+	node* pkt_node = flow->head;
+	while (pkt_node != NULL && pkt_node->packet->is_pkt_in_WFQ) {
+		pkt_node = pkt_node->next_node;
+	}
+	if (pkt_node != NULL)
+		res = pkt_node->packet;
+	return res;
+}
+packet* get_pkt_from_head_of_flow(flow_struct* flow)
+{
+	packet* res = NULL, *pkt_to_copy = NULL;
+	if (!is_flow_empty(flow)) {
+		res = initialize_packet();
+		if (res == NULL)
+			return NULL;
+		pkt_to_copy = find_new_pkt_to_WFQ(flow);
+		for (int i = 0; i < ADDR_IN_PACKET_SIZE; i++) {
+			res->src_addr[i] = pkt_to_copy->src_addr[i];
+			res->dst_addr[i] = pkt_to_copy->dst_addr[i];
+		}
+		res->src_port = pkt_to_copy->src_port;
+		res->dst_port = pkt_to_copy->dst_port;
+		res->length = pkt_to_copy->length;
+		res->time = pkt_to_copy->time;
+		res->weight = pkt_to_copy->weight;
+		memcpy(res->pkt_str, pkt_to_copy->pkt_str, strlen(pkt_to_copy->pkt_str));
+		pkt_to_copy->is_pkt_in_WFQ = true;
+	}
+	return res;
+}
+void insert_new_pkt_to_WFQ(flow_struct* WFQ, flow_struct* root_flow)
+{
+	packet* pkt_to_send = get_pkt_from_head_of_flow(root_flow);
+	insert_pkt_to_flow(WFQ, pkt_to_send);
 }
 heap_node* get_end_of_heap(heap_node* root,int num_of_levels_to_go, int new_child_num)
 {

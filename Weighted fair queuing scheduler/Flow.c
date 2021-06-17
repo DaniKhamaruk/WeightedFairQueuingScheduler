@@ -74,27 +74,6 @@ bool is_pkt_belong_to_flow(flow_struct* flow, packet* pkt)
 	flow_id id = flow->id;
 	return (ip_compare(id, pkt) && port_compare(id, pkt));
 }
-packet* get_pkt_from_head_of_flow(flow_struct* flow)
-{
-	packet* res = NULL;
-	if (!is_flow_empty(flow)) {
-		res = initialize_packet();
-		if (res == NULL)
-			return NULL;
-		for (int i = 0; i < ADDR_IN_PACKET_SIZE; i++) {
-			res->src_addr[i] = flow->head->packet->src_addr[i];
-			res->dst_addr[i] = flow->head->packet->dst_addr[i];
-		}
-		res->src_port = flow->head->packet->src_port;
-		res->dst_port = flow->head->packet->dst_port;
-		res->length = flow->head->packet->length;
-		res->time = flow->head->packet->time;
-		res->weight = flow->head->packet->weight;
-		memcpy(res->pkt_str, flow->head->packet->pkt_str, strlen(flow->head->packet->pkt_str));
-		flow->head->packet->is_pkt_in_WFQ = true;
-	}
-	return res;
-}
 bool delete_first_pkt_in_flow(flow_struct* flow)
 {
 	node* node_to_delete = flow->head;
@@ -115,9 +94,4 @@ bool delete_first_pkt_in_flow(flow_struct* flow)
 		}
 	}
 	return is_weight_changed;
-}
-void insert_new_pkt_to_WFQ(flow_struct *WFQ, flow_struct *root_flow)
-{
-	packet *pkt_to_send = get_pkt_from_head_of_flow(root_flow);
-	insert_pkt_to_flow(WFQ, pkt_to_send);
 }
