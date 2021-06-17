@@ -31,8 +31,8 @@ float search_for_minimum_time_left_in_heap_recursive_float(heap_node* current_he
 	return minimum_time_out_of_three_float(time_left, time_right, this_node_time);
 }
 
-float get_weight_portion_from_packet(packet* pkt,float total_weight_of_heap) {
-	float weight_portion = (pkt->weight) / total_weight_of_heap;
+float get_weight_portion_from_packet(float weight,float total_weight_of_heap) {
+	float weight_portion = (weight) / total_weight_of_heap;
 	return weight_portion;
 }
 heap_node* swap_nodes(heap_node* current_heap_node) {
@@ -72,7 +72,7 @@ heap_node* update_min_time_and_place_for_all_heap_recursive(heap_node* current_h
 		current_heap_node->right_child=update_min_time_and_place_for_all_heap_recursive(current_heap_node->right_child, total_weight_of_heap);
 	}
 	if (!is_flow_empty(current_heap_node->flow)) {
-		float weight_portion = get_weight_portion_from_packet(current_heap_node->flow->head->packet, total_weight_of_heap);
+		float weight_portion = get_weight_portion_from_packet(current_heap_node->flow->weight, total_weight_of_heap);
 		current_heap_node->flow->gps_parameters.time_remain = (current_heap_node->flow->gps_parameters.length_remain) / weight_portion;
 	}
 	else {
@@ -87,7 +87,7 @@ void update_remaining_length_for_all_heap_recursive(heap_node* current_heap_node
 		return;
 	}
 	if (!is_flow_empty(current_heap_node->flow)) {
-		float weight_portion = get_weight_portion_from_packet(current_heap_node->flow->head->packet, total_weight_of_heap);
+		float weight_portion = get_weight_portion_from_packet(current_heap_node->flow->weight, total_weight_of_heap);
 		current_heap_node->flow->gps_parameters.length_remain -= weight_portion * delta_time_to_run;
 	}
 	update_remaining_length_for_all_heap_recursive(current_heap_node->left_child, total_weight_of_heap, delta_time_to_run);

@@ -55,9 +55,11 @@ heap_node* search_flow_to_send_his_pkt(heap_node* root, float total_weight)
 	node* next_pkt_node = root->flow->head->next_node;
 	while (next_pkt_node != NULL) {
 		if (!next_pkt_node->packet->is_pkt_in_WFQ) {
+			if (next_pkt_node->packet->is_weight_given) {
+				total_weight = total_weight - root->flow->weight + next_pkt_node->packet->weight;
+			}
 			next_pkt_in_flow_time_remain = root->flow->gps_parameters.time_remain +
-				next_pkt_node->packet->length * (total_weight - root->flow->weight + next_pkt_node->packet->weight)
-					/ next_pkt_node->packet->weight;
+				next_pkt_node->packet->length * total_weight / next_pkt_node->packet->weight;
 			break;
 		}
 		next_pkt_node = next_pkt_node->next_node;
@@ -134,10 +136,10 @@ void insret_flow_to_heap(heap_struct* heap, flow_struct *flow)
 	else
 		last_parent->right_child = new_node;
 }
-int get_total_weight(heap_node* root)
+float get_total_weight(heap_node* root)
 {
 	if (root == NULL)
-		return 0;
+		return 0.0;
 	if (!is_flow_empty(root->flow))
 		return root->flow->weight + get_total_weight(root->left_child) + get_total_weight(root->right_child);
 	else

@@ -87,13 +87,15 @@ void print_packet(packet* p_packet_to_print) {
 	printf("Length:%d\n", p_packet_to_print->length);
 	printf("Weight:%.3f\n\n", p_packet_to_print->weight);
 }
-float get_weight(char* p_line, int* p_index_to_read_from) {
+float get_weight(char* p_line, int* p_index_to_read_from, bool * is_weight_given) {
 	float weight = 0.0, new_remainder = 0.0;
 	int whole_part = 0, remainder = 0, i = 0, j = 1;
 	if (ASCII_CR_LF == p_line[*p_index_to_read_from]) {
+		*is_weight_given = false;
 		return (float)1;
 	}
 	else {
+		*is_weight_given = true;
 		i = *p_index_to_read_from;
 		while (ASCII_DOT != p_line[i]) {
 			whole_part = whole_part * 10 + (p_line[i] - ASCII_NUMBER_OFFSET);
@@ -128,7 +130,7 @@ packet* get_info_to_packet(char* p_line) {
 	get_src_or_dst_addr_from_line(p_line, &index_in_the_line, dst_addr);
 	dst_port = get_time_or_port_from_string(p_line, &index_in_the_line);
 	length = get_length_from_string(p_line, &index_in_the_line);
-	weight = get_weight(p_line, &index_in_the_line);
+	weight = get_weight(p_line, &index_in_the_line, &new_packet->is_weight_given);
 	fill_packet_with_info(new_packet, time, src_addr, dst_addr, src_port, dst_port, length, weight);
 	memcpy(new_packet->pkt_str, p_line, strlen(p_line));
 	new_packet->is_pkt_in_WFQ = false;

@@ -29,8 +29,9 @@ bool is_flow_empty(flow_struct* flow)
 void insert_pkt_to_flow(flow_struct* flow, packet* pkt)
 {
 	if (is_flow_empty(flow)) {
-		flow->gps_parameters.length_remain = pkt->length;
-		flow->weight = pkt->weight;
+		flow->gps_parameters.length_remain = (float)pkt->length;
+		if (pkt->is_weight_given)
+			flow->weight = pkt->weight;
 	}
 	insert_node_in_queue(&flow->head, pkt, &flow->tail);
 	flow->num_of_pkts++;
@@ -83,9 +84,10 @@ bool delete_first_pkt_in_flow(flow_struct* flow)
 		free(node_to_delete->packet);
 		free(node_to_delete);
 		if (flow->head != NULL) {
-			//flow->head->next_node = NULL;
 			is_weight_changed = (flow->weight != flow->head->packet->weight);
-			flow->weight = flow->head->packet->weight;
+			flow->gps_parameters.length_remain = (float)flow->head->packet->length;
+			if (flow->head->packet->is_weight_given)
+				flow->weight = flow->head->packet->weight;
 		}
 		flow->num_of_pkts--;
 		if (is_flow_empty(flow)) {
