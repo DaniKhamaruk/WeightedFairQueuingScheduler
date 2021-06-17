@@ -1,5 +1,5 @@
 #include "GPS_Module.h"
-
+#include "Flow.h"
 
 
 void run_GPS_algorithem(heap_node* flow,int delta_time) {
@@ -14,7 +14,7 @@ float minimum_time_out_of_two_float(float first_number, float seconed_number) {
 		return seconed_number;
 }
 float minimum_time_out_of_three_float(float time_left, float time_right, float this_node_time) {
-	float min_time = INFINITE_TIME_FLOAT;
+	float min_time = FLT_MAX;
 	min_time = minimum_time_out_of_two_float(time_left, time_right);
 	min_time = minimum_time_out_of_two_float(min_time, this_node_time);
 	return min_time;
@@ -22,7 +22,7 @@ float minimum_time_out_of_three_float(float time_left, float time_right, float t
 
 float search_for_minimum_time_left_in_heap_recursive_float(heap_node* current_heap_node,float total_heap_weight) {
 	if (NULL == current_heap_node) {
-		return INFINITE_TIME_FLOAT;
+		return FLT_MAX;
 	}
 	float time_left = search_for_minimum_time_left_in_heap_recursive_float(current_heap_node->left_child, total_heap_weight);
 	float time_right = search_for_minimum_time_left_in_heap_recursive_float(current_heap_node->right_child, total_heap_weight);
@@ -49,6 +49,7 @@ heap_node* swap_nodes(heap_node* current_heap_node) {
 			current_heap_node->right_child = temp_right_child_node;
 		}
 	}
+	current_heap_node = temp_heap_node;
 	if (NULL != current_heap_node->right_child) {
 		if (current_heap_node->flow->gps_parameters.time_remain > current_heap_node->right_child->flow->gps_parameters.time_remain) {
 			temp_left_child_node = current_heap_node->right_child->left_child;
@@ -63,16 +64,20 @@ heap_node* swap_nodes(heap_node* current_heap_node) {
 	}
 	return temp_heap_node;
 }
-heap_node* update_min_time_and_place_for_all_heap_recursive(heap_node* current_heap_node, float total_weight_of_heap,
-	float delta_time_to_run){
+heap_node* update_min_time_and_place_for_all_heap_recursive(heap_node* current_heap_node, float total_weight_of_heap){
 	if (NULL != current_heap_node->left_child) {
-		current_heap_node->left_child=update_min_time_and_place_for_all_heap_recursive(current_heap_node->left_child, total_weight_of_heap, delta_time_to_run);
+		current_heap_node->left_child=update_min_time_and_place_for_all_heap_recursive(current_heap_node->left_child, total_weight_of_heap);
 	}
 	if (NULL != current_heap_node->right_child) {
-		current_heap_node->right_child=update_min_time_and_place_for_all_heap_recursive(current_heap_node->right_child, total_weight_of_heap, delta_time_to_run);
+		current_heap_node->right_child=update_min_time_and_place_for_all_heap_recursive(current_heap_node->right_child, total_weight_of_heap);
 	}
-	float weight_portion = get_weight_portion_from_packet(current_heap_node->flow->head->packet,total_weight_of_heap);
-	current_heap_node->flow->gps_parameters.time_remain = (current_heap_node->flow->gps_parameters.length_remain)/weight_portion;
+	if (!is_flow_empty(current_heap_node->flow)) {
+		float weight_portion = get_weight_portion_from_packet(current_heap_node->flow->head->packet, total_weight_of_heap);
+		current_heap_node->flow->gps_parameters.time_remain = (current_heap_node->flow->gps_parameters.length_remain) / weight_portion;
+	}
+	else {
+		current_heap_node->flow->gps_parameters.time_remain = FLT_MAX;
+	}
 	return swap_nodes(current_heap_node);
 }
 

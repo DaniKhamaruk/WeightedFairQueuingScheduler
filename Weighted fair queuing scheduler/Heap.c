@@ -83,7 +83,7 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 		if ((heap->root->flow = insert_pkt_to_new_flow(pkt)) == NULL)
 			return EXIT_FAILURE;
 		///////////////////////////////////////////////////////////////////////////
-		heap->root->flow->gps_parameters.time_remain = (float)pkt->length;
+		//heap->root->flow->gps_parameters.time_remain = (float)pkt->length;
 		///////////////////////////////////////////////////////////////////////////
 		is_total_weight_changed = true;
 		heap->size++;
@@ -95,7 +95,7 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 			if (flow == NULL)
 				return EXIT_FAILURE;
 			///////////////////////////////////////////////////////////////////////////
-			flow->gps_parameters.time_remain = (float)pkt->length * (heap->total_weight+ pkt->weight) / pkt->weight;
+			//flow->gps_parameters.time_remain = (float)pkt->length * (heap->total_weight+ pkt->weight) / pkt->weight;
 			///////////////////////////////////////////////////////////////////////////
 			insret_flow_to_heap(heap, flow);
 			is_total_weight_changed = true;
@@ -113,6 +113,7 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 		/*
 			calc GPS to each node and fix the heap
 		*/
+		heap->root = update_min_time_and_place_for_all_heap_recursive(heap->root,heap->total_weight);
 	}
 	return EXIT_SUCCESS;
 }
@@ -128,18 +129,23 @@ void heap_test()
 	//a = delete_first_pkt_in_flow(heap.root->flow);
 	pkt = get_info_to_packet("2612 173.253.160.44 36503 165.173.44.44 29583 100\n");
 	insert_pkt_to_heap(&heap, pkt);
+	///////////////////////////////////////////////////////////////////////////////
+	update_remaining_length_for_all_heap_recursive(heap.root, heap.total_weight, 120.0);
 	pkt = get_info_to_packet("2612 1.1.1.1 36503 165.173.44.44 29583 300 3.0\n");
 	insert_pkt_to_heap(&heap, pkt);
 	pkt = get_info_to_packet("2612 1.2.1.1 36503 165.173.44.44 29583 400 4.0\n");
 	insert_pkt_to_heap(&heap, pkt);
+	pkt = get_info_to_packet("2700 5.2.1.1 36503 165.173.44.44 29583 40 50.0\n");
+	insert_pkt_to_heap(&heap, pkt);
+	printf("yosi");
 	//pkt = get_info_to_packet("2666 173.253.160.44 36503 165.173.44.44 29583 100\n");
 	//insert_pkt_to_heap(&heap, pkt);
 	//pkt = get_info_to_packet("2770 1.1.1.1 36503 165.173.44.44 29583 5000 5.0\n");
 	//insert_pkt_to_heap(&heap, pkt);
-	float total_weight_for_debug = (float)get_total_weight(heap.root);
+	//float total_weight_for_debug = (float)get_total_weight(heap.root);
 	//float b = search_for_minimum_time_left_in_heap_recursive_float(heap.root,total_weight_for_debug);
 	//update_remaining_length_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
-	heap.root = update_min_time_and_place_for_all_heap_recursive(heap.root, total_weight_for_debug, 7.0);
+//	heap.root = update_min_time_and_place_for_all_heap_recursive(heap.root, total_weight_for_debug);
 	
 	//pkt = get_info_to_packet("2770 2.2.2.2 36503 165.173.44.44 29583 10 2.0\n");
 	//insert_pkt_to_heap(&heap, pkt);

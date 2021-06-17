@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <float.h>
 
 #define ADDR_IN_PACKET_SIZE 4
 #define MAX_LINE_SIZE 10000//TOOD:need to check this
@@ -11,7 +12,7 @@
 #define ASCII_DOT 46
 #define ASCII_CR_LF 10
 #define INFINITE_TIME_INT (unsigned int)-1
-#define INFINITE_TIME_FLOAT (float)99999999.0
+
 typedef struct packet {
 	int time, src_port, dst_port, length;
 	float weight;
