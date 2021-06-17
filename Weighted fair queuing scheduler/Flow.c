@@ -85,6 +85,7 @@ bool delete_first_pkt_in_flow(flow_struct* flow)
 	bool is_weight_changed = false;
 	if (!is_flow_empty(flow)) {
 		flow->head = flow->head->next_node;
+		free(node_to_delete->packet);
 		free(node_to_delete);
 		if (flow->head != NULL) {
 			flow->head->next_node = NULL;

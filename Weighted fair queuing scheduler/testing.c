@@ -97,8 +97,6 @@ void main() {
 				time_to_next_pkt = FLT_MAX;
 			}	
 		}
-		//preparation to next iteration
-		delta = min(time_to_next_pkt, heap.root->flow->gps_parameters.time_remain);
 		///////////////////////////////////////////////
 		////TODO: remove
 		if (!is_flow_empty(heap.root->flow)) {
@@ -107,6 +105,9 @@ void main() {
 			printf("%f %f\n\n", heap.root->flow->gps_parameters.time_remain, heap.root->flow->gps_parameters.length_remain);
 		}
 		///////////////////////////////////////////////
+
+		//preparation to next iteration
+		delta = min(time_to_next_pkt, heap.root->flow->gps_parameters.time_remain);
 		update_heap(&heap, delta);
 		///////////////////////////////////////////////
 		////TODO: remove
@@ -126,4 +127,6 @@ void main() {
 			}
 		}
 	}
+	//TODO: free heap
+	printf("end\n");
 }
