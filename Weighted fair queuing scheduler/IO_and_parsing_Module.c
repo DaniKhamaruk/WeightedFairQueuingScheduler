@@ -49,7 +49,6 @@ int get_length_from_string(char* p_line, int* p_addr_of_index) {
 void get_src_or_dst_addr_from_line(char* p_line,int* p_index_to_read_from,int* buffer_to_fill) {
 	int index_to_read_from = *p_index_to_read_from;
 	int part_of_addr =0, j = 0;
-	//TODO:check if we need to validate that IP segments are under 255?
 	while (ASCII_SPACE != p_line[index_to_read_from]) {
 		while ((ASCII_DOT != p_line[index_to_read_from])&& (ASCII_SPACE != p_line[index_to_read_from])) {
 			part_of_addr = part_of_addr * 10 + p_line[index_to_read_from] - ASCII_NUMBER_OFFSET;
@@ -63,7 +62,6 @@ void get_src_or_dst_addr_from_line(char* p_line,int* p_index_to_read_from,int* b
 		part_of_addr = 0;
 	}
 	*p_index_to_read_from = index_to_read_from+1;
-	//return buffer_to_send;
 	return;
 }
 void fill_packet_with_info(packet* p_packet_to_fill,int time,int* src_addr, int* dst_addr,
@@ -111,7 +109,6 @@ float get_weight(char* p_line, int* p_index_to_read_from, bool * is_weight_given
 	}
 	new_remainder = (float)remainder;
 	new_remainder /= (float)j;
-	/*new_remainder = (float)(remainder / j);*/
 	weight = (float)(whole_part)+new_remainder;
 	return weight;
 }
@@ -136,13 +133,3 @@ packet* get_info_to_packet(char* p_line) {
 	new_packet->is_pkt_in_WFQ = false;
 	return new_packet;
 }
-//void main() {
-//	//char p_line[MAX_LINE_SIZE] = { 0 };
-//	//int index_in_the_line = 0;
-//	//packet* local = NULL;
-//	//while (NULL!=fgets(p_line, MAX_LINE_SIZE, stdin)) {
-//	//	local = get_info_to_packet(p_line);
-//	//	print_packet(local);
-//	//}
-//	//TODO:need to free memory
-//}

@@ -3,8 +3,6 @@
 
 node* initialize_head(node* head) {
 	node* null_node = create_new_node(NULL);
-	//head->packet = NULL;
-	//head->next_node = NULL;
 	return null_node;
 }
 node* create_new_node(packet* p_new_packet) {
@@ -44,11 +42,4 @@ node* pop(node* head) {
 	head = head->next_node;
 	free(temp_head);
 	return head;
-	//TODO: need to check if returning static allocation is fine
-}
-
-void main_2() {
-
-	//TODO:Func for tail
-	return;
 }

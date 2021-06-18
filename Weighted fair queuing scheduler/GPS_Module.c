@@ -2,10 +2,6 @@
 #include "Flow.h"
 
 
-void run_GPS_algorithem(heap_node* flow,int delta_time) {
-
-}
-
 float minimum_time_out_of_two_float(float first_number, float seconed_number) {
 	if (first_number < seconed_number) {
 		return first_number;
@@ -43,10 +39,6 @@ heap_node* swap_nodes(heap_node* current_heap_node) {
 			temp_right_child_node = current_heap_node->left_child->right_child;
 			temp_heap_node = current_heap_node->left_child;
 
-			/*temp_heap_node->right_child = current_heap_node->right_child;
-			temp_heap_node->left_child = current_heap_node;
-			current_heap_node->left_child = temp_left_child_node;
-			current_heap_node->right_child = temp_right_child_node;*/
 			temp_heap_node->right_child = current_heap_node->right_child;
 			current_heap_node->left_child = temp_left_child_node;
 			current_heap_node->right_child = temp_right_child_node;
@@ -61,10 +53,6 @@ heap_node* swap_nodes(heap_node* current_heap_node) {
 			temp_right_child_node = current_heap_node->right_child->right_child;
 			temp_heap_node = current_heap_node->right_child;
 
-			/*temp_heap_node->right_child = current_heap_node;
-			temp_heap_node->left_child = current_heap_node->left_child;
-			current_heap_node->left_child = temp_left_child_node;
-			current_heap_node->right_child = temp_right_child_node;*/
 			temp_heap_node->left_child = current_heap_node->left_child;
 			current_heap_node->left_child = temp_left_child_node;
 			current_heap_node->right_child = temp_right_child_node;

@@ -77,23 +77,17 @@ heap_node* search_flow_to_send_his_pkt(heap_node* root, float total_weight)
 		next_pkt_in_flow_time_remain = root->flow->gps_parameters.time_remain;
 	if (left != NULL)
 		left_time_remain = get_remain_time(left, total_weight);
-	//	left_time_remain = left->flow->gps_parameters.time_remain;
 	if (right != NULL)
 		right_time_remain = get_remain_time(right, total_weight);
-	//	right_time_remain = right->flow->gps_parameters.time_remain;
 	while (next_pkt_node != NULL) {
 		if (next_pkt_node->packet->is_weight_given) {
 			total_weight_old = total_weight;
 			total_weight = total_weight - weight + next_pkt_node->packet->weight;
 			weight = next_pkt_node->packet->weight;
-
-			///////////////////////////////////////////////////////
 			if (left_time_remain > next_pkt_in_flow_time_remain)
 				left_time_remain = update_time_to_remain(left, total_weight, total_weight_old, next_pkt_in_flow_time_remain);
 			if (right_time_remain > next_pkt_in_flow_time_remain)
 				right_time_remain = update_time_to_remain(right, total_weight, total_weight_old,next_pkt_in_flow_time_remain);
-			////////////////////////////////////////////////////////
-
 		}
 		next_pkt_in_flow_time_remain += next_pkt_node->packet->length * total_weight / weight;
 		if (!next_pkt_node->packet->is_pkt_in_WFQ) {
@@ -102,16 +96,6 @@ heap_node* search_flow_to_send_his_pkt(heap_node* root, float total_weight)
 		next_pkt_node = next_pkt_node->next_node;
 		if (next_pkt_node == NULL)
 			next_pkt_in_flow_time_remain = FLT_MAX;
-		/*
-		if (!next_pkt_node->packet->is_pkt_in_WFQ) {
-			if (next_pkt_node->packet->is_weight_given) {
-				total_weight = total_weight - root->flow->weight + next_pkt_node->packet->weight;
-			}
-			next_pkt_in_flow_time_remain += next_pkt_node->packet->length * total_weight / next_pkt_node->packet->weight;
-			break;
-		}
-		next_pkt_node = next_pkt_node->next_node;
-		*/
 	}
 	min_time = min(next_pkt_in_flow_time_remain, left_time_remain);
 	min_time = min(min_time, right_time_remain);
@@ -239,24 +223,14 @@ void update_heap(heap_struct* heap, float delta_time_to_update, flow_struct *WFQ
 	heap->total_weight = get_total_weight(heap->root);
 	heap->root = update_min_time_and_place_for_all_heap_recursive(heap->root, heap->total_weight);
 }
-void heap_test()
-{/*
-	heap_struct heap;
-	init_heap(&heap);
-	packet *pkt = get_info_to_packet("0 70.246.64.70 14770 4.71.70.4 11970 100 2.0\n");
-	insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("2612 173.253.160.44 36503 165.173.44.44 29583 100\n");
-	insert_pkt_to_heap(&heap, pkt);
-	///////////////////////////////////////////////////////////////////////////////
-	float delta = heap.root->flow->gps_parameters.time_remain;
-	update_heap(&heap, delta);
-	pkt = get_info_to_packet("2612 1.1.1.1 36503 165.173.44.44 29583 300 3.0\n");
-	insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("2612 1.2.1.1 36503 165.173.44.44 29583 400 4.0\n");
-	insert_pkt_to_heap(&heap, pkt);
-	pkt = get_info_to_packet("2700 5.2.1.1 36503 165.173.44.44 29583 40 50.0\n");
-	insert_pkt_to_heap(&heap, pkt);
-	printf("yosi");
-	//TODO: NEED TO FREE ALL OF THE PACKETS !
-	return;*/
+void free_heap(heap_node* heap)
+{
+	if (heap == NULL)
+		return;
+	if (heap->left_child != NULL)
+		free_heap(heap->left_child);
+	if (heap->right_child != NULL)
+		free_heap(heap->right_child);
+	free(heap->flow);
+	free(heap);
 }

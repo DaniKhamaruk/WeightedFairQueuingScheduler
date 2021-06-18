@@ -5,44 +5,17 @@
 #include <math.h>
 #include <stdlib.h>
 
-
-void dani()
-{
-	char p_line[MAX_LINE_SIZE] = { 0 };
-	int index_in_the_line = 0;
-	node* head = NULL, * tail = NULL;
-	//////////////////////
-	head = initialize_head(head);
-	tail = initialize_head(tail);
-	head->next_node = tail;
-	//TODO:combine into a func ^^^
-	//////////////////////
-	packet* local = NULL;
-	while (NULL != fgets(p_line, MAX_LINE_SIZE, stdin)) {
-		local = get_info_to_packet(p_line);
-		print_packet(local);
-		insert_node_in_queue(&head, local, &tail);
-	}
-}
-void udi()
-{
-	heap_test();
-}
-
 void main() {
-	FILE* fp = NULL;
-	fopen_s(&fp,"output.txt", "w");
-
 	int global_time = 0;
 	float time_to_next_pkt = 0, delta = 0;
 	char p_line[MAX_LINE_SIZE] = { 0 };
+	bool new_pkt_arrived = true, no_more_new_pkt = false, WFQ_empty = false;
+	flow_struct* WFQ = initialize_flow();
+	heap_node* node_to_send_his_pkt = NULL;
 	heap_struct heap;
 	init_heap(&heap);
 	fgets(p_line, MAX_LINE_SIZE, stdin);
-	packet *pkt = get_info_to_packet(p_line), *pkt_to_send = NULL;
-	bool new_pkt_arrived = true, no_more_new_pkt = false, WFQ_empty = false;
-	flow_struct *WFQ = initialize_flow();
-	heap_node* node_to_send_his_pkt = NULL;
+	packet* pkt = get_info_to_packet(p_line), * pkt_to_send = NULL;
 	while (!no_more_new_pkt || !WFQ_empty) {
 		global_time += delta;
 		//current iteration
@@ -71,11 +44,6 @@ void main() {
 				WFQ_empty = false;
 				WFQ->gps_parameters.time_remain = (float)WFQ->head->packet->length;
 				fprintf(stdout,"%d: %s", global_time, WFQ->head->packet->pkt_str);
-
-				//////////////////////////////////////////////////////////
-				//TODO: remove
-				fprintf(fp, "%d: %s", global_time, WFQ->head->packet->pkt_str);
-				//////////////////////////////////////////////////////////
 			}
 			else {
 				WFQ_empty = true;
@@ -101,9 +69,6 @@ void main() {
 			}
 		}
 	}
-	//TODO: free heap
-	fclose(fp);
-
-
+	free_heap(heap.root);
 	free(WFQ);
 }
