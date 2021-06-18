@@ -51,6 +51,17 @@ float update_time_to_remain(heap_node* node, float total_weight, float total_wei
 	length_remain = node->flow->gps_parameters.length_remain - delta_time* node_weight/ total_weight_old;
 	return delta_time + length_remain * total_weight / node_weight;
 }
+float get_remain_time(heap_node* node_heap, float total_weight)
+{
+	float res = node_heap->flow->gps_parameters.time_remain;
+	node* curr = node_heap->flow->head;
+	while (curr->packet->is_pkt_in_WFQ) {
+		curr = curr->next_node;
+		if (curr != NULL)
+			res += curr->packet->length * total_weight / node_heap->flow->weight;
+	}
+	return res;
+}
 heap_node* search_flow_to_send_his_pkt(heap_node* root, float total_weight)
 {
 	if (root == NULL || is_flow_empty(root->flow))
@@ -65,9 +76,11 @@ heap_node* search_flow_to_send_his_pkt(heap_node* root, float total_weight)
 	if (next_pkt_node != NULL)
 		next_pkt_in_flow_time_remain = root->flow->gps_parameters.time_remain;
 	if (left != NULL)
-		left_time_remain = left->flow->gps_parameters.time_remain;
+		left_time_remain = get_remain_time(left, total_weight);
+	//	left_time_remain = left->flow->gps_parameters.time_remain;
 	if (right != NULL)
-		right_time_remain = right->flow->gps_parameters.time_remain;
+		right_time_remain = get_remain_time(right, total_weight);
+	//	right_time_remain = right->flow->gps_parameters.time_remain;
 	while (next_pkt_node != NULL) {
 		if (next_pkt_node->packet->is_weight_given) {
 			total_weight_old = total_weight;
