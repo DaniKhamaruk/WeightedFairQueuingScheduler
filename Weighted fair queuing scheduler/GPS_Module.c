@@ -43,10 +43,15 @@ heap_node* swap_nodes(heap_node* current_heap_node) {
 			temp_right_child_node = current_heap_node->left_child->right_child;
 			temp_heap_node = current_heap_node->left_child;
 
-			temp_heap_node->right_child = current_heap_node->right_child;
+			/*temp_heap_node->right_child = current_heap_node->right_child;
 			temp_heap_node->left_child = current_heap_node;
 			current_heap_node->left_child = temp_left_child_node;
+			current_heap_node->right_child = temp_right_child_node;*/
+			temp_heap_node->right_child = current_heap_node->right_child;
+			current_heap_node->left_child = temp_left_child_node;
 			current_heap_node->right_child = temp_right_child_node;
+			temp_heap_node->left_child = current_heap_node;
+			temp_heap_node->left_child = swap_nodes(current_heap_node);
 		}
 	}
 	current_heap_node = temp_heap_node;
@@ -56,10 +61,14 @@ heap_node* swap_nodes(heap_node* current_heap_node) {
 			temp_right_child_node = current_heap_node->right_child->right_child;
 			temp_heap_node = current_heap_node->right_child;
 
-			temp_heap_node->right_child = current_heap_node;
+			/*temp_heap_node->right_child = current_heap_node;
+			temp_heap_node->left_child = current_heap_node->left_child;
+			current_heap_node->left_child = temp_left_child_node;
+			current_heap_node->right_child = temp_right_child_node;*/
 			temp_heap_node->left_child = current_heap_node->left_child;
 			current_heap_node->left_child = temp_left_child_node;
 			current_heap_node->right_child = temp_right_child_node;
+			temp_heap_node->right_child = swap_nodes(current_heap_node);
 		}
 	}
 	return temp_heap_node;

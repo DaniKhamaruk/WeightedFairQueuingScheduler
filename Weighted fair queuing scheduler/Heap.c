@@ -51,18 +51,33 @@ heap_node* search_flow_to_send_his_pkt(heap_node* root, float total_weight)
 		return root;
 	heap_node* left = search_flow_to_send_his_pkt(root->left_child, total_weight);
 	heap_node* right = search_flow_to_send_his_pkt(root->right_child, total_weight);
-	float next_pkt_in_flow_time_remain = FLT_MAX, left_time_remain = FLT_MAX, right_time_remain = FLT_MAX, min_time = 0;
+	float next_pkt_in_flow_time_remain = FLT_MAX, left_time_remain = FLT_MAX, right_time_remain = FLT_MAX, min_time = 0,
+		weight = root->flow->weight;
 	node* next_pkt_node = root->flow->head->next_node;
+	if (next_pkt_node != NULL)
+		next_pkt_in_flow_time_remain = root->flow->gps_parameters.time_remain;
 	while (next_pkt_node != NULL) {
+		if (next_pkt_node->packet->is_weight_given) {
+			total_weight = total_weight - weight + next_pkt_node->packet->weight;
+			weight = next_pkt_node->packet->weight;
+		}
+		next_pkt_in_flow_time_remain += next_pkt_node->packet->length * total_weight / weight;
+		if (!next_pkt_node->packet->is_pkt_in_WFQ) {
+			break;
+		}
+		next_pkt_node = next_pkt_node->next_node;
+		if (next_pkt_node == NULL)
+			next_pkt_in_flow_time_remain = FLT_MAX;
+		/*
 		if (!next_pkt_node->packet->is_pkt_in_WFQ) {
 			if (next_pkt_node->packet->is_weight_given) {
 				total_weight = total_weight - root->flow->weight + next_pkt_node->packet->weight;
 			}
-			next_pkt_in_flow_time_remain = root->flow->gps_parameters.time_remain +
-				next_pkt_node->packet->length * total_weight / next_pkt_node->packet->weight;
+			next_pkt_in_flow_time_remain += next_pkt_node->packet->length * total_weight / next_pkt_node->packet->weight;
 			break;
 		}
 		next_pkt_node = next_pkt_node->next_node;
+		*/
 	}
 	if (left != NULL)
 		left_time_remain = left->flow->gps_parameters.time_remain;
