@@ -43,6 +43,14 @@ flow_struct* search_flow(heap_struct* heap, packet* pkt)
 		return res->flow;
 	return NULL;
 }
+float update_time_to_remain(heap_node* node, float total_weight, float total_weight_old, float delta_time)
+{
+	if (node == NULL)
+		return FLT_MAX;
+	float length_remain = 0.0, node_weight = node->flow->weight;
+	length_remain = node->flow->gps_parameters.length_remain - delta_time* node_weight/ total_weight_old;
+	return delta_time + length_remain * total_weight / node_weight;
+}
 heap_node* search_flow_to_send_his_pkt(heap_node* root, float total_weight)
 {
 	if (root == NULL || is_flow_empty(root->flow))
@@ -52,14 +60,27 @@ heap_node* search_flow_to_send_his_pkt(heap_node* root, float total_weight)
 	heap_node* left = search_flow_to_send_his_pkt(root->left_child, total_weight);
 	heap_node* right = search_flow_to_send_his_pkt(root->right_child, total_weight);
 	float next_pkt_in_flow_time_remain = FLT_MAX, left_time_remain = FLT_MAX, right_time_remain = FLT_MAX, min_time = 0,
-		weight = root->flow->weight;
+		weight = root->flow->weight, total_weight_old = total_weight;
 	node* next_pkt_node = root->flow->head->next_node;
 	if (next_pkt_node != NULL)
 		next_pkt_in_flow_time_remain = root->flow->gps_parameters.time_remain;
+	if (left != NULL)
+		left_time_remain = left->flow->gps_parameters.time_remain;
+	if (right != NULL)
+		right_time_remain = right->flow->gps_parameters.time_remain;
 	while (next_pkt_node != NULL) {
 		if (next_pkt_node->packet->is_weight_given) {
+			total_weight_old = total_weight;
 			total_weight = total_weight - weight + next_pkt_node->packet->weight;
 			weight = next_pkt_node->packet->weight;
+
+			///////////////////////////////////////////////////////
+			if (left_time_remain > next_pkt_in_flow_time_remain)
+				left_time_remain = update_time_to_remain(left, total_weight, total_weight_old, next_pkt_in_flow_time_remain);
+			if (right_time_remain > next_pkt_in_flow_time_remain)
+				right_time_remain = update_time_to_remain(right, total_weight, total_weight_old,next_pkt_in_flow_time_remain);
+			////////////////////////////////////////////////////////
+
 		}
 		next_pkt_in_flow_time_remain += next_pkt_node->packet->length * total_weight / weight;
 		if (!next_pkt_node->packet->is_pkt_in_WFQ) {
@@ -79,10 +100,6 @@ heap_node* search_flow_to_send_his_pkt(heap_node* root, float total_weight)
 		next_pkt_node = next_pkt_node->next_node;
 		*/
 	}
-	if (left != NULL)
-		left_time_remain = left->flow->gps_parameters.time_remain;
-	if (right != NULL)
-		right_time_remain = right->flow->gps_parameters.time_remain;
 	min_time = min(next_pkt_in_flow_time_remain, left_time_remain);
 	min_time = min(min_time, right_time_remain);
 	if (left_time_remain == min_time)
@@ -194,7 +211,7 @@ int insert_pkt_to_heap(heap_struct* heap, packet *pkt)
 }
 void update_flows_if_first_pkt_finished_to_send(heap_node* root, flow_struct* WFQ)
 {
-	if (root == NULL || root->flow->gps_parameters.length_remain > 0)
+	if (root == NULL || root->flow  == NULL|| root->flow->gps_parameters.length_remain > 0)
 		return;
 	if (!is_flow_empty(root->flow) && !root->flow->head->packet->is_pkt_in_WFQ)
 		insert_new_pkt_to_WFQ(WFQ, root->flow);

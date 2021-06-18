@@ -3,6 +3,7 @@
 #include "Heap.h"
 #include "Flow.h"
 #include <math.h>
+#include <stdlib.h>
 
 
 void dani()
@@ -27,53 +28,8 @@ void udi()
 {
 	heap_test();
 }
+
 void main() {
-	//dani();
-	//udi();
-
-	/*V1
-	global_time = 0;
-	read first pkt
-	new_pkt_arrived = true;
-	while (true) {
-		//current iteration
-		if new_pkt_arrived
-			insert_pkt_to_heap
-			read next pkt
-			calc time_to_next_pkt
-
-		//preparation to next iteration
-		delta = min(time_to_next_pkt, heap->root->gps_parameters.time_remain);
-		update_heap(heap, delta);
-		global_time += delta;
-		time_to_next_pkt -= delta
-		if time_to_next_pkt == 0
-			new_pkt_arrived = true;
-	}	
-	*/
-
-
-
-	/* V2
-	global_time = 0;
-	read first pkt
-	new_pkt_arrived = true;
-	while (true) {
-		//current iteration
-		if new_pkt_arrived
-			insert_pkt_to_heap
-			read next pkt
-			calc time_to_next_pkt
-
-		//preparation to next iteration
-		delta = min(time_to_next_pkt, heap->root->gps_parameters.time_remain);
-		update_heap(heap, delta);
-		global_time += delta;
-		time_to_next_pkt -= delta
-		if time_to_next_pkt == 0
-			new_pkt_arrived = true;
-	}
-	*/
 	FILE* fp = NULL;
 	fopen_s(&fp,"output.txt", "w");
 
@@ -108,7 +64,7 @@ void main() {
 				delete_first_pkt_in_flow(WFQ);
 			if (is_flow_empty(WFQ) && !is_flow_empty(heap.root->flow)) { //fetch new pkt to send
 				node_to_send_his_pkt = search_flow_to_send_his_pkt(heap.root,heap.total_weight);
-				if (node_to_send_his_pkt != NULL)
+				if (node_to_send_his_pkt != NULL) 
 					insert_new_pkt_to_WFQ(WFQ, node_to_send_his_pkt->flow);
 			}
 			if (!is_flow_empty(WFQ)) {
